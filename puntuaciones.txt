@@ -1,0 +1,10 @@
+
+
+Nuevo jugador: marco
+Puntuación: 3.0
+
+Nuevo jugador: marco
+Puntuación: 1.5
+
+Nuevo jugador: Marco
+Puntuación: 3.0

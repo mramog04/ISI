@@ -1,4 +1,5 @@
 numero = input("Introduzca un número para calcular su factorial: ")
+
 while True:
     try:
         numero = int(numero)
@@ -11,6 +12,7 @@ while True:
     except ValueError:
         print("Por favor, introduzca un número válido.")
     numero = input("Introduzca un número para calcular su factorial: ")
+    
 aux = numero
 for i in range(1, numero):
     numero = numero * i
