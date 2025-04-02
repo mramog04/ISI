@@ -46,8 +46,17 @@ def calculate_cost_log_reg(y, y_hat):
     epsilon = 1e-15
     y_hat = np.clip(y_hat, epsilon, 1-epsilon)
     cost_i = 0
-    for i in range(m):
-        cost_i += y[i] * log(y_hat[i]) + (1-y[i]) * log(1-y_hat[i])
+    
+    """ for i in range(m):
+        cost_i += y[i] * log(y_hat[i]) + (1-y[i]) * log(1-y_hat[i]) """
+        
+    cost_i = np.sum(y * np.log(y_hat) + (1-y) * np.log(1-y_hat)) 
+    
+    """ for i in range(m):
+        if(y[i]==1):
+            cost_i += y[i] * log(y_hat[i])
+        else:
+            cost_i += (1-y[i]) * log(1-y_hat[i]) """
     # ============================================================
     cost_i = -cost_i/m
 
@@ -78,10 +87,12 @@ def fun_sigmoid(theta_sigmoid, x):
     """
     # ====================== TU CÓDIGO AQUÍ ======================
     z = np.dot(theta_sigmoid, x)
+    """ z = theta_sigmoid @ x """ 
     g = 1/(1+np.exp(-z))
     # ============================================================
 
     return g
+
 
 
 # **************************************************************************
@@ -139,6 +150,7 @@ def train_logistic_regression(X_train, y_train, alpha_train,
     # -------------
     # a. Resultado intermedio: Obtener la estimación (es decir, salida de la
     # regresión logística) para cada elemento
+    print("Theta inicial: ", theta_train)
     for i in range(m):
         # Añadir un 1 (es decir, el valor para x0) al principio de cada patrón
         x_i = np.insert(np.array([X_train[i]]), 0, 1)
@@ -148,10 +160,10 @@ def train_logistic_regression(X_train, y_train, alpha_train,
         # ====================== TU CÓDIGO AQUÍ ======================
         h_train[i]=fun_sigmoid(theta_train, x_i)
         # ============================================================
-
     # b. Calcular el costo
     # ====================== TU CÓDIGO AQUÍ ======================
     cost_values[0] = calculate_cost_log_reg(y_train, h_train)
+    print("Costo inicial: ", cost_values[0])
     # ============================================================
 
     # -------------
@@ -183,7 +195,9 @@ def train_logistic_regression(X_train, y_train, alpha_train,
 
         # b. Actualización de los thetas
         # ====================== TU CÓDIGO AQUÍ ======================
-        theta_train = theta_old - alpha_train * aux
+        theta_train = theta_old - alpha_train * (1/m)*aux
+        new_theta = theta_train
+        print("Theta en la iteración ", num_iter+1, ": ", new_theta)
         # ============================================================
         
         
@@ -198,11 +212,12 @@ def train_logistic_regression(X_train, y_train, alpha_train,
             # Salida esperada (es decir, resultado de la función sigmoide) para el
             # patrón i-ésimo, y almacenarlo en h_train para uso futuro
             # ====================== TU CÓDIGO AQUÍ ======================
-            h_train[i] = fun_sigmoid(theta_train, x_i)
+            h_train[i] = fun_sigmoid(theta_sigmoid=new_theta, x=x_i)
             # ============================================================
 
         # b. Calcular el costo
         # ====================== TU CÓDIGO AQUÍ ======================
+        
         cost_values[num_iter+1] = calculate_cost_log_reg(y_train, h_train)
         # ============================================================
 
@@ -213,9 +228,9 @@ def train_logistic_regression(X_train, y_train, alpha_train,
         '''
         # ====================== TU CÓDIGO AQUÍ ======================
         if(abs(cost_values[num_iter+1]-cost_values[num_iter])<0.001):
+            cost_values = cost_values[:num_iter+2]
             break
         # ============================================================
-
 
     # Si verbose es True, graficar el costo en función del número de iteraciones
     if verbose:

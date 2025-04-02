@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # -------------
 
     # import features and labels
-    h5f_data = h5py.File(data_path, 'r')
+    h5f_data = h5py.File("mammographic_data.h5", 'r')
 
     features_ds = h5f_data['data']
     labels_ds = h5f_data['labels']
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # SPLIT DATA INTO TRAINING AND TEST SETS
     # ====================== YOUR CODE HERE ======================
-
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
     # ============================================================
 
     # STANDARDIZE DATA
@@ -60,23 +60,26 @@ if __name__ == "__main__":
     # -------------
     # Create an instance of the logistic regression classifier
     # ====================== YOUR CODE HERE ======================
-
+    clf = LogisticRegression()
     # ============================================================
 
     # Train the classifier
     # ====================== YOUR CODE HERE ======================
-
+    clf.fit(X_train, y_train)
     # ============================================================
 
     # Predict the classes of the test set samples using the trained classifier
     # ====================== YOUR CODE HERE ======================
-
+    y_test_assig_skl = clf.predict(X_test)
     # ============================================================
 
     # OTHER WAY OF PREDICTING THE CLASSES: Get the soft outputs (i.e. the
     # probabilities) of the test set and compare them with decision_threshold
     # ====================== YOUR CODE HERE ======================
-
+    y_test_probs_1 = clf.predict_proba(X_test)[:, 1]
+    y_test_probs_0 = clf.predict_proba(X_test)[:, 0]
+    print(y_test_probs_0)
+    print(y_test_probs_1)
     # ============================================================
 
     # Display confusion matrix
@@ -86,13 +89,15 @@ if __name__ == "__main__":
     plt.title('Confusion Matrix for the scikit-learn classifier', fontsize=14)
     plt.show()
 
+    
+      
     # -------------
     # ACCURACY AND F-SCORE
     # -------------
 
     # Accuracy
     # ====================== YOUR CODE HERE ======================
-
+    accuracy = np.mean(y_test_assig_skl == y_test)
     # ============================================================
     print("***************")
     print("The accuracy of the Logistic Regression classifier is {:.4f}".
@@ -101,7 +106,10 @@ if __name__ == "__main__":
 
     # F1 score
     # ====================== YOUR CODE HERE ======================
-
+    TP = confm_skl[1, 1]
+    FP = confm_skl[0, 1]
+    FN = confm_skl[1, 0]
+    f_score = 2*TP/(2*TP+FP+FN)
     # ============================================================
     print("")
     print("***************")
